@@ -82,26 +82,16 @@
   }
 
   pop() {
-  if (this.ints.length === 0) {
-    return undefined; // or any appropriate value to indicate the array is empty
+    return this.ints.pop();
   }
-
-  const popped = this.ints[this.ints.length - 1];
-  this.ints = this.ints.slice(0, -1);
-
-  return [popped, this.ints.slice()];
-}
-
 
   push(newInt) {
     this.ints.push(newInt);
     return [...this.ints];
   }
-
   getEveryNth(n) {
     return this.ints.filter((_, index) => index % n === 0);
   }
-
   getAllReversed() {
     return [...this.ints].reverse();
   }
@@ -193,17 +183,7 @@
     }
   }
 
-  // Optional: Implementing the `back` method
-  back() {
-    if (this.currentPage > 0) {
-      this.currentPage--;
-      const start = this.currentPage * this.charactersPerPage;
-      const end = start + this.charactersPerPage;
-      return this.text.slice(start, end);
-    } else {
-      return null;
-    }
-  }
+
 }
 
 
@@ -246,25 +226,39 @@
   }
 
   work() {
-    this.ants = this.ants.map(ant => ({ name: ant.name, health: ant.health - 20 }));
-    this.ants = this.ants.filter(ant => ant.health > 0);
     if (this.ants.length === 0) {
       return "No ants here. Did you work them to death?";
-    } else {
-      return `${this.ants.length} ants starting work!`;
     }
+
+    const originalLength = this.ants.length;
+
+    this.ants = this.ants.filter(ant => {
+      ant.health -= 20;
+      return ant.health > 0;
+    });
+
+    return `${originalLength} ants starting work!`;
   }
 
-  feed(name) {
-    const antToFeed = this.ants.find(ant => ant.name === name);
-    if (antToFeed) {
-      antToFeed.health += 15;
-      return "Yum!";
-    } else {
-      return `${name} not found!`;
-    }
+  feed(antName) {
+    let antFound = false;
+
+    this.ants = this.ants.map(ant => {
+      if (ant.name === antName) {
+        ant.health += 15;
+        antFound = true;
+      }
+      return ant;
+    });
+
+    return antFound ? "Yum!" : `${antName} not found!`;
   }
 }
+
+
+
+
+
 
 
 
